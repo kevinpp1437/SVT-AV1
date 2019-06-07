@@ -6232,6 +6232,24 @@ void HmeLevel0(
     yTopLeftSearchRegion = ((int16_t)sixteenthRefPicPtr->origin_y + origin_y) + y_search_area_origin;
     searchRegionIndex = xTopLeftSearchRegion + yTopLeftSearchRegion * sixteenthRefPicPtr->stride_y;
 
+#if HME_LEVEL_O_CHROMA
+    sad_loop_kernel(
+        &context_ptr->sixteenth_sb_buffer[0],
+        context_ptr->sixteenth_sb_buffer_stride,
+        &sixteenthRefPicPtr->buffer_y[searchRegionIndex],
+        (context_ptr->hme_search_method == FULL_SAD_SEARCH) ? sixteenthRefPicPtr->stride_y : sixteenthRefPicPtr->stride_y * 2,
+        (context_ptr->hme_search_method == FULL_SAD_SEARCH) ? sb_height : sb_height >> 1,
+        sb_width,
+        /* results */
+        level0BestSad,
+        xLevel0SearchCenter,
+        yLevel0SearchCenter,
+        /* range */
+        sixteenthRefPicPtr->stride_y,
+        search_area_width,
+        search_area_height
+    );
+#else
     if (((sb_width & 7) == 0) || (sb_width == 4))
     {
         if (((search_area_width & 15) == 0) && (asm_type == ASM_AVX2))
@@ -6314,6 +6332,7 @@ void HmeLevel0(
                 search_area_height
         );
     }
+#endif
 
     *level0BestSad = (context_ptr->hme_search_method == FULL_SAD_SEARCH) ?
                      *level0BestSad     :
