@@ -6233,10 +6233,16 @@ void HmeLevel0(
     searchRegionIndex = xTopLeftSearchRegion + yTopLeftSearchRegion * sixteenthRefPicPtr->stride_y;
 
 #if HME_LEVEL_O_CHROMA
-    sad_loop_kernel(
+    uint32_t searchRegionChromaIndex = (xTopLeftSearchRegion >> 1) + (yTopLeftSearchRegion >> 1) * (sixteenthRefPicPtr->stride_y >> 1);
+
+    sad_loop_kernel_level_0_all(
         &context_ptr->sixteenth_sb_buffer[0],
+        context_ptr->sixteenth_cb_sb_buffer,
+        context_ptr->sixteenth_cr_sb_buffer,
         context_ptr->sixteenth_sb_buffer_stride,
         &sixteenthRefPicPtr->buffer_y[searchRegionIndex],
+        &sixteenthRefPicPtr->buffer_cb[searchRegionChromaIndex],
+        &sixteenthRefPicPtr->buffer_cr[searchRegionChromaIndex],
         (context_ptr->hme_search_method == FULL_SAD_SEARCH) ? sixteenthRefPicPtr->stride_y : sixteenthRefPicPtr->stride_y * 2,
         (context_ptr->hme_search_method == FULL_SAD_SEARCH) ? sb_height : sb_height >> 1,
         sb_width,

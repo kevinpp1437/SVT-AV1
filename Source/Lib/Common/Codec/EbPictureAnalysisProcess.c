@@ -4704,8 +4704,8 @@ void DecimateInputPicture(
             decimation_2d(
                 &input_padded_picture_ptr->buffer_cb[(input_padded_picture_ptr->origin_x >> 1) + (input_padded_picture_ptr->origin_y >> 1) * input_padded_picture_ptr->stride_cb],
                 input_padded_picture_ptr->stride_cb,
-                (sixteenth_decimated_picture_ptr->width >> 1),
-                (sixteenth_decimated_picture_ptr->height >> 1),
+                (input_padded_picture_ptr->width >> 1),
+                (input_padded_picture_ptr->height >> 1),
                 &sixteenth_decimated_picture_ptr->buffer_cb[(sixteenth_decimated_picture_ptr->origin_x >> 1) + (sixteenth_decimated_picture_ptr->origin_y >> 1) *sixteenth_decimated_picture_ptr->stride_cb],
                 sixteenth_decimated_picture_ptr->stride_cb,
                 4);
@@ -4721,8 +4721,8 @@ void DecimateInputPicture(
             decimation_2d(
                 &input_padded_picture_ptr->buffer_cr[(input_padded_picture_ptr->origin_x >> 1) + (input_padded_picture_ptr->origin_y >> 1) * input_padded_picture_ptr->stride_cr],
                 input_padded_picture_ptr->stride_cr,
-                (sixteenth_decimated_picture_ptr->width >> 1),
-                (sixteenth_decimated_picture_ptr->height >> 1),
+                (input_padded_picture_ptr->width >> 1),
+                (input_padded_picture_ptr->height >> 1),
                 &sixteenth_decimated_picture_ptr->buffer_cr[(sixteenth_decimated_picture_ptr->origin_x >> 1) + (sixteenth_decimated_picture_ptr->origin_y >> 1) *sixteenth_decimated_picture_ptr->stride_cr],
                 sixteenth_decimated_picture_ptr->stride_cr,
                 4);
