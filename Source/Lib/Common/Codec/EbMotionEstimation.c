@@ -13399,12 +13399,21 @@ EbErrorType motion_estimate_lcu(
     int16_t hmeLevel1SearchAreaInWidth;
     int16_t hmeLevel1SearchAreaInHeight;
     // Configure HME level 0, level 1 and level 2 from static config parameters
+#if DECOUPLE_ALTREF_ME
+    EbBool enable_hme_level0_flag =
+        context_ptr->enable_hme_level0_flag;
+    EbBool enable_hme_level1_flag =
+        context_ptr->enable_hme_level1_flag;
+    EbBool enable_hme_level2_flag =
+        context_ptr->enable_hme_level2_flag;
+#else
     EbBool enable_hme_level0_flag =
         picture_control_set_ptr->enable_hme_level0_flag;
     EbBool enable_hme_level1_flag =
         picture_control_set_ptr->enable_hme_level1_flag;
     EbBool enable_hme_level2_flag =
         picture_control_set_ptr->enable_hme_level2_flag;
+#endif
     EbBool enableHalfPel32x32 = EB_FALSE;
     EbBool enableHalfPel16x16 = EB_FALSE;
     EbBool enableHalfPel8x8 = EB_FALSE;
@@ -13504,8 +13513,11 @@ EbErrorType motion_estimate_lcu(
                 }
                 // B - NO HME in boundaries
                 // C - Skip HME
-
+#if DECOUPLE_ALTREF_ME
+                if (context_ptr->enable_hme_flag &&
+#else
                 if (picture_control_set_ptr->enable_hme_flag &&
+#endif
                     /*B*/ sb_height ==
                         BLOCK_SIZE_64) {  //(searchCenterSad >
                                           // sequence_control_set_ptr->static_config.skipTier0HmeTh))

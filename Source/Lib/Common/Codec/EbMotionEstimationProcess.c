@@ -184,7 +184,13 @@ EbErrorType signal_derivation_me_kernel_oq(
 
 
 #if DECOUPLE_ALTREF_ME
-        // Set the default settings of  subpel
+        // Set HME flags
+        context_ptr->me_context_ptr->enable_hme_flag = picture_control_set_ptr->enable_hme_flag;
+        context_ptr->me_context_ptr->enable_hme_level0_flag = picture_control_set_ptr->enable_hme_level0_flag;
+        context_ptr->me_context_ptr->enable_hme_level1_flag = picture_control_set_ptr->enable_hme_level1_flag;
+        context_ptr->me_context_ptr->enable_hme_level2_flag = picture_control_set_ptr->enable_hme_level2_flag;
+
+        // Set the default settings of subpel
         if (picture_control_set_ptr->sc_content_detected)
             if (picture_control_set_ptr->enc_mode <= ENC_M1)
                 context_ptr->me_context_ptr->use_subpel_flag = 1;
@@ -341,7 +347,13 @@ EbErrorType tf_signal_derivation_me_kernel_oq(
         context_ptr->me_context_ptr->fractional_search64x64 = EB_TRUE;
 
 #if DECOUPLE_ALTREF_ME
-    // Set the default settings of  subpel
+    // Set HME flags
+    context_ptr->me_context_ptr->enable_hme_flag = picture_control_set_ptr->tf_enable_hme_flag;
+    context_ptr->me_context_ptr->enable_hme_level0_flag = picture_control_set_ptr->tf_enable_hme_level0_flag;
+    context_ptr->me_context_ptr->enable_hme_level1_flag = picture_control_set_ptr->tf_enable_hme_level1_flag;
+    context_ptr->me_context_ptr->enable_hme_level2_flag = picture_control_set_ptr->tf_enable_hme_level2_flag;
+
+    // Set the default settings of subpel
     if (picture_control_set_ptr->sc_content_detected)
         if (picture_control_set_ptr->enc_mode <= ENC_M1)
             context_ptr->me_context_ptr->use_subpel_flag = 1;
@@ -703,7 +715,11 @@ void* motion_estimation_kernel(void *input_ptr)
                         context_ptr->me_context_ptr->sb_src_ptr = &input_padded_picture_ptr->buffer_y[bufferIndex];
                         context_ptr->me_context_ptr->sb_src_stride = input_padded_picture_ptr->stride_y;
                         // Load the 1/4 decimated SB from the 1/4 decimated input to the 1/4 intermediate SB buffer
+#if DECOUPLE_ALTREF_ME
+                        if (context_ptr->me_context_ptr->enable_hme_level1_flag) {
+#else
                         if (picture_control_set_ptr->enable_hme_level1_flag) {
+#endif
                             bufferIndex = (quarter_picture_ptr->origin_y + (sb_origin_y >> 1)) * quarter_picture_ptr->stride_y + quarter_picture_ptr->origin_x + (sb_origin_x >> 1);
 
                             for (lcuRow = 0; lcuRow < (sb_height >> 1); lcuRow++) {
@@ -712,7 +728,11 @@ void* motion_estimation_kernel(void *input_ptr)
                         }
 
                         // Load the 1/16 decimated SB from the 1/16 decimated input to the 1/16 intermediate SB buffer
+#if DECOUPLE_ALTREF_ME
+                        if (context_ptr->me_context_ptr->enable_hme_level0_flag) {
+#else
                         if (picture_control_set_ptr->enable_hme_level0_flag) {
+#endif
                             bufferIndex = (sixteenth_picture_ptr->origin_y + (sb_origin_y >> 2)) * sixteenth_picture_ptr->stride_y + sixteenth_picture_ptr->origin_x + (sb_origin_x >> 2);
 
                             {

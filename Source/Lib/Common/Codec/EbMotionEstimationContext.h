@@ -420,6 +420,11 @@ extern "C" {
         uint8_t                       me_search_method;
 
 #if DECOUPLE_ALTREF_ME
+        EbBool                        enable_hme_flag;
+        EbBool                        enable_hme_level0_flag;
+        EbBool                        enable_hme_level1_flag;
+        EbBool                        enable_hme_level2_flag;
+
         EbBool                        use_subpel_flag;
         EbBool                        half_pel_mode;
         EbBool                        quarter_pel_mode;

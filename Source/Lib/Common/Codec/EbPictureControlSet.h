@@ -14091,15 +14091,23 @@ extern "C" {
         uint16_t                              full_sb_count;
         EbBool                                init_pred_struct_position_flag;
         int8_t                                hierarchical_layers_diff;
-        // ME Tools
+
 #if DECOUPLE_ALTREF_ME
+        // HME Flags
         EbBool                                enable_hme_flag;
         EbBool                                enable_hme_level0_flag;
         EbBool                                enable_hme_level1_flag;
         EbBool                                enable_hme_level2_flag;
+
+        // HME Flags form Temporal Filtering
+        EbBool                                tf_enable_hme_flag;
+        EbBool                                tf_enable_hme_level0_flag;
+        EbBool                                tf_enable_hme_level1_flag;
+        EbBool                                tf_enable_hme_level2_flag;
 #else
+        // ME Tools
         EbBool                                use_subpel_flag;
-        EbBool                      in_loop_motion_estimation_sblock          enable_hme_flag;
+        EbBool                                enable_hme_flag;
         EbBool                                enable_hme_level0_flag;
         EbBool                                enable_hme_level1_flag;
         EbBool                                enable_hme_level2_flag;
