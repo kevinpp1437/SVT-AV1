@@ -14261,7 +14261,11 @@ EbErrorType motion_estimate_lcu(
                                                            search_area_height,
                                                            asm_type);
                         context_ptr->full_quarter_pel_refinement = 0;
+#if DECOUPLE_ALTREF_ME
+                        if (context_ptr->half_pel_mode ==
+#else
                         if (picture_control_set_ptr->half_pel_mode ==
+#endif
                             EX_HP_MODE) {
                             // Move to the top left of the search region
                             xTopLeftSearchRegion =
@@ -14377,7 +14381,11 @@ EbErrorType motion_estimate_lcu(
                                 search_area_height,
                                 asm_type);
                         }
+#if DECOUPLE_ALTREF_ME
+                        if (context_ptr->quarter_pel_mode ==
+#else
                         if (picture_control_set_ptr->quarter_pel_mode ==
+#endif
                             EX_QP_MODE) {
                             // Quarter-Pel search
                             memcpy(context_ptr
@@ -14495,7 +14503,11 @@ EbErrorType motion_estimate_lcu(
 
                     // Interpolate the search region for Half-Pel Refinements
                     // H - AVC Style
+#if DECOUPLE_ALTREF_ME
+                    if (context_ptr->half_pel_mode ==
+#else
                     if (picture_control_set_ptr->half_pel_mode ==
+#endif
                         REFINMENT_HP_MODE) {
                         InterpolateSearchRegionAVC(
                             context_ptr,
@@ -14565,7 +14577,11 @@ EbErrorType motion_estimate_lcu(
                             enableHalfPel16x16,
                             enableHalfPel8x8);
                     }
+#if DECOUPLE_ALTREF_ME
+                    if (context_ptr->quarter_pel_mode ==
+#else
                     if (picture_control_set_ptr->quarter_pel_mode ==
+#endif
                         REFINMENT_QP_MODE) {
                         // Quarter-Pel Refinement [8 search positions]
                         QuarterPelSearch_LCU(

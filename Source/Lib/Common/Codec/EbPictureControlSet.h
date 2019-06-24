@@ -14092,13 +14092,20 @@ extern "C" {
         EbBool                                init_pred_struct_position_flag;
         int8_t                                hierarchical_layers_diff;
         // ME Tools
-        EbBool                                use_subpel_flag;
+#if DECOUPLE_ALTREF_ME
         EbBool                                enable_hme_flag;
+        EbBool                                enable_hme_level0_flag;
+        EbBool                                enable_hme_level1_flag;
+        EbBool                                enable_hme_level2_flag;
+#else
+        EbBool                                use_subpel_flag;
+        EbBool                      in_loop_motion_estimation_sblock          enable_hme_flag;
         EbBool                                enable_hme_level0_flag;
         EbBool                                enable_hme_level1_flag;
         EbBool                                enable_hme_level2_flag;
         EbBool                                half_pel_mode;
         EbBool                                quarter_pel_mode;
+#endif
         // MD
         EbEncMode                             enc_mode;
         EB_SB_DEPTH_MODE                     *sb_depth_mode_array;

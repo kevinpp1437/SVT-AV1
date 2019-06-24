@@ -3115,7 +3115,7 @@ void* picture_decision_kernel(void *input_ptr)
                             picture_control_set_ptr->tx_mode = (picture_control_set_ptr->atb_mode) ?
                                 TX_MODE_SELECT :
                                 TX_MODE_LARGEST;
-
+#if !DECOUPLE_ALTREF_ME
                             // Set the default settings of  subpel
                                 if (picture_control_set_ptr->sc_content_detected)
                                     if (picture_control_set_ptr->enc_mode <= ENC_M1)
@@ -3141,6 +3141,7 @@ void* picture_decision_kernel(void *input_ptr)
                                     picture_control_set_ptr->quarter_pel_mode =
                                         REFINMENT_QP_MODE;
                                 }
+#endif
                                 picture_control_set_ptr->use_src_ref = EB_FALSE;
                                 picture_control_set_ptr->enable_in_loop_motion_estimation_flag = EB_FALSE;
                                 picture_control_set_ptr->limit_ois_to_dc_mode_flag = EB_FALSE;
