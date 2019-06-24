@@ -39,8 +39,6 @@
 extern "C" {
 #endif
 
-#define DECOUPLE_ALTREF_ME                1 // De-couple completely the HME/ME/Subpel used for ME Inter prediction and the one used for ALTREF temporal filtering 
-
 #define INCOMPLETE_SB_FIX                 1 // Handle the incomplete SBs properly based on the standard and consider all allowed blocks
 #define CDEF_AVX_OPT                      1
 #define MR_MODE                           0
@@ -3388,8 +3386,6 @@ static const uint16_t search_area_height[SC_MAX_LEVEL][INPUT_SIZE_COUNT][MAX_SUP
     //     M0    M1    M2    M3    M4    M5    M6    M7    M8    M9    M10    M11    M12
 };
 
-
-#if DECOUPLE_ALTREF_ME
 /******************************************************************************
                             ME/HME settings for Altref Temporal Filtering
 *******************************************************************************/
@@ -3651,7 +3647,7 @@ static const uint16_t tf_search_area_height[SC_MAX_LEVEL][INPUT_SIZE_COUNT][MAX_
 
     //     M0    M1    M2    M3    M4    M5    M6    M7    M8    M9    M10    M11    M12
 };
-#endif
+
 static const uint16_t ep_to_pa_block_index[BLOCK_MAX_COUNT_SB_64] = {
     0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,
     1 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,

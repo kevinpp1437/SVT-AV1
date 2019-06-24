@@ -104,10 +104,7 @@ void* set_me_hme_params_oq(
     me_context_ptr->number_hme_search_region_in_height = 2;
 
     uint8_t sc_content_detected = picture_control_set_ptr->sc_content_detected;
-#if !DECOUPLE_ALTREF_ME
-    if (me_context_ptr->me_alt_ref == EB_TRUE)
-        sc_content_detected = 0;
-#endif
+
     // HME Level0
     me_context_ptr->hme_level0_total_search_area_width = hme_level0_total_search_area_width[sc_content_detected][input_resolution][hmeMeLevel];
     me_context_ptr->hme_level0_total_search_area_height = hme_level0_total_search_area_height[sc_content_detected][input_resolution][hmeMeLevel];
@@ -182,8 +179,6 @@ EbErrorType signal_derivation_me_kernel_oq(
         else
             context_ptr->me_context_ptr->fractional_search64x64 = EB_TRUE;
 
-
-#if DECOUPLE_ALTREF_ME
         // Set HME flags
         context_ptr->me_context_ptr->enable_hme_flag = picture_control_set_ptr->enable_hme_flag;
         context_ptr->me_context_ptr->enable_hme_level0_flag = picture_control_set_ptr->enable_hme_level0_flag;
@@ -217,17 +212,13 @@ EbErrorType signal_derivation_me_kernel_oq(
             context_ptr->me_context_ptr->quarter_pel_mode =
                 REFINMENT_QP_MODE;
         }
-#endif
+
 
     // Set fractional search model
     // 0: search all blocks
     // 1: selective based on Full-Search SAD & MV.
     // 2: off
-#if DECOUPLE_ALTREF_ME
     if (context_ptr->me_context_ptr->use_subpel_flag == 1) {
-#else
-    if (picture_control_set_ptr->use_subpel_flag == 1) {
-#endif
         if (picture_control_set_ptr->enc_mode <= ENC_M6)
             context_ptr->me_context_ptr->fractional_search_model = 0;
         else
@@ -257,8 +248,6 @@ EbErrorType signal_derivation_me_kernel_oq(
     return return_error;
 };
 
-
-#if DECOUPLE_ALTREF_ME
 /************************************************
  * Set ME/HME Params for Altref Temporal Filtering
  ************************************************/
@@ -346,7 +335,6 @@ EbErrorType tf_signal_derivation_me_kernel_oq(
     else
         context_ptr->me_context_ptr->fractional_search64x64 = EB_TRUE;
 
-#if DECOUPLE_ALTREF_ME
     // Set HME flags
     context_ptr->me_context_ptr->enable_hme_flag = picture_control_set_ptr->tf_enable_hme_flag;
     context_ptr->me_context_ptr->enable_hme_level0_flag = picture_control_set_ptr->tf_enable_hme_level0_flag;
@@ -380,17 +368,13 @@ EbErrorType tf_signal_derivation_me_kernel_oq(
         context_ptr->me_context_ptr->quarter_pel_mode =
             REFINMENT_QP_MODE;
     }
-#endif
+
 
     // Set fractional search model
     // 0: search all blocks
     // 1: selective based on Full-Search SAD & MV.
     // 2: off
-#if DECOUPLE_ALTREF_ME
     if (context_ptr->me_context_ptr->use_subpel_flag == 1) {
-#else
-    if (picture_control_set_ptr->use_subpel_flag == 1) {
-#endif
         if (picture_control_set_ptr->enc_mode <= ENC_M6)
             context_ptr->me_context_ptr->fractional_search_model = 0;
         else
@@ -419,7 +403,7 @@ EbErrorType tf_signal_derivation_me_kernel_oq(
         SUB_SAD_SEARCH;
     return return_error;
 };
-#endif
+
 
 /************************************************
  * Motion Analysis Context Constructor
@@ -638,14 +622,6 @@ void* motion_estimation_kernel(void *input_ptr)
         ///context_ptr->me_context_ptr->lambda = lambda_mode_decision_ld_sad_qp_scaling[picture_control_set_ptr->picture_qp];
         context_ptr->me_context_ptr->me_alt_ref = inputResultsPtr->task_type == 1 ? EB_TRUE : EB_FALSE;
 
-#if !DECOUPLE_ALTREF_ME
-        // ME Kernel Signal(s) derivation
-        signal_derivation_me_kernel_oq(
-            sequence_control_set_ptr,
-            picture_control_set_ptr,
-            context_ptr);
-#endif
-
         // Lambda Assignement
         if (sequence_control_set_ptr->static_config.pred_structure == EB_PRED_RANDOM_ACCESS) {
             if (picture_control_set_ptr->temporal_layer_index == 0)
@@ -663,13 +639,13 @@ void* motion_estimation_kernel(void *input_ptr)
         }
         if (inputResultsPtr->task_type == 0)
         {
-#if DECOUPLE_ALTREF_ME
+
             // ME Kernel Signal(s) derivation
             signal_derivation_me_kernel_oq(
                 sequence_control_set_ptr,
                 picture_control_set_ptr,
                 context_ptr);
-#endif
+
             // Segments
             segment_index = inputResultsPtr->segment_index;
             picture_width_in_sb = (sequence_control_set_ptr->seq_header.max_frame_width + sequence_control_set_ptr->sb_sz - 1) / sequence_control_set_ptr->sb_sz;
@@ -715,11 +691,7 @@ void* motion_estimation_kernel(void *input_ptr)
                         context_ptr->me_context_ptr->sb_src_ptr = &input_padded_picture_ptr->buffer_y[bufferIndex];
                         context_ptr->me_context_ptr->sb_src_stride = input_padded_picture_ptr->stride_y;
                         // Load the 1/4 decimated SB from the 1/4 decimated input to the 1/4 intermediate SB buffer
-#if DECOUPLE_ALTREF_ME
                         if (context_ptr->me_context_ptr->enable_hme_level1_flag) {
-#else
-                        if (picture_control_set_ptr->enable_hme_level1_flag) {
-#endif
                             bufferIndex = (quarter_picture_ptr->origin_y + (sb_origin_y >> 1)) * quarter_picture_ptr->stride_y + quarter_picture_ptr->origin_x + (sb_origin_x >> 1);
 
                             for (lcuRow = 0; lcuRow < (sb_height >> 1); lcuRow++) {
@@ -728,11 +700,7 @@ void* motion_estimation_kernel(void *input_ptr)
                         }
 
                         // Load the 1/16 decimated SB from the 1/16 decimated input to the 1/16 intermediate SB buffer
-#if DECOUPLE_ALTREF_ME
                         if (context_ptr->me_context_ptr->enable_hme_level0_flag) {
-#else
-                        if (picture_control_set_ptr->enable_hme_level0_flag) {
-#endif
                             bufferIndex = (sixteenth_picture_ptr->origin_y + (sb_origin_y >> 2)) * sixteenth_picture_ptr->stride_y + sixteenth_picture_ptr->origin_x + (sb_origin_x >> 2);
 
                             {
@@ -918,13 +886,11 @@ void* motion_estimation_kernel(void *input_ptr)
         }
         else {
 
-#if DECOUPLE_ALTREF_ME
         // ME Kernel Signal(s) derivation
         tf_signal_derivation_me_kernel_oq(
             sequence_control_set_ptr,
             picture_control_set_ptr,
             context_ptr);
-#endif
 
         // temporal filtering start
         context_ptr->me_context_ptr->me_alt_ref = EB_TRUE;

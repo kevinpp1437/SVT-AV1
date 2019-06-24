@@ -776,11 +776,11 @@ EbErrorType signal_derivation_multi_processes_oq(
     picture_control_set_ptr->enable_hme_level0_flag = enable_hme_level0_flag[picture_control_set_ptr->sc_content_detected][sequence_control_set_ptr->input_resolution][picture_control_set_ptr->enc_mode];
     picture_control_set_ptr->enable_hme_level1_flag = enable_hme_level1_flag[picture_control_set_ptr->sc_content_detected][sequence_control_set_ptr->input_resolution][picture_control_set_ptr->enc_mode];
     picture_control_set_ptr->enable_hme_level2_flag = enable_hme_level2_flag[picture_control_set_ptr->sc_content_detected][sequence_control_set_ptr->input_resolution][picture_control_set_ptr->enc_mode];
-#if DECOUPLE_ALTREF_ME
+
     picture_control_set_ptr->tf_enable_hme_level0_flag = tf_enable_hme_level0_flag[picture_control_set_ptr->sc_content_detected][sequence_control_set_ptr->input_resolution][picture_control_set_ptr->enc_mode];
     picture_control_set_ptr->tf_enable_hme_level1_flag = tf_enable_hme_level1_flag[picture_control_set_ptr->sc_content_detected][sequence_control_set_ptr->input_resolution][picture_control_set_ptr->enc_mode];
     picture_control_set_ptr->tf_enable_hme_level2_flag = tf_enable_hme_level2_flag[picture_control_set_ptr->sc_content_detected][sequence_control_set_ptr->input_resolution][picture_control_set_ptr->enc_mode];
-#endif
+
         if (sc_content_detected)
             if (picture_control_set_ptr->enc_mode <= ENC_M1)
                 picture_control_set_ptr->pic_depth_mode = PIC_ALL_DEPTH_MODE;
@@ -3119,33 +3119,7 @@ void* picture_decision_kernel(void *input_ptr)
                             picture_control_set_ptr->tx_mode = (picture_control_set_ptr->atb_mode) ?
                                 TX_MODE_SELECT :
                                 TX_MODE_LARGEST;
-#if !DECOUPLE_ALTREF_ME
-                            // Set the default settings of  subpel
-                                if (picture_control_set_ptr->sc_content_detected)
-                                    if (picture_control_set_ptr->enc_mode <= ENC_M1)
-                                        picture_control_set_ptr->use_subpel_flag = 1;
-                                    else
-                                        picture_control_set_ptr->use_subpel_flag = 0;
-                                else
-                                    picture_control_set_ptr->use_subpel_flag = 1;
-                                if (MR_MODE) {
-                                    picture_control_set_ptr->half_pel_mode =
-                                        EX_HP_MODE;
-                                    picture_control_set_ptr->quarter_pel_mode =
-                                        EX_QP_MODE;
-                                } else if (picture_control_set_ptr->enc_mode ==
-                                           ENC_M0) {
-                                    picture_control_set_ptr->half_pel_mode =
-                                        EX_HP_MODE;
-                                    picture_control_set_ptr->quarter_pel_mode =
-                                        REFINMENT_QP_MODE;
-                                } else {
-                                    picture_control_set_ptr->half_pel_mode =
-                                        REFINMENT_HP_MODE;
-                                    picture_control_set_ptr->quarter_pel_mode =
-                                        REFINMENT_QP_MODE;
-                                }
-#endif
+
                                 picture_control_set_ptr->use_src_ref = EB_FALSE;
                                 picture_control_set_ptr->enable_in_loop_motion_estimation_flag = EB_FALSE;
                                 picture_control_set_ptr->limit_ois_to_dc_mode_flag = EB_FALSE;
